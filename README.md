@@ -44,7 +44,7 @@
 > npm i webpack webpack-cli --save-dev
 
 ### 3-3. webpack 라이브러리 설치
-> npm install --save-dev @babel/core @babel/preset-env @babel/preset-react babel-loader clean-webpack-plugin css-loader html-loader file-loader url-loader node-sass react react-dom sass-loader style-loader cross-env html-webpack-plugin mini-css-extract-plugin webpack webpack-cli webpack-dev-middleware webpack-dev-server
+> npm install --save-dev @babel/core @babel/preset-env @babel/preset-react babel-loader clean-webpack-plugin css-loader html-loader file-loader url-loader node-sass react react-dom sass-loader style-loader cross-env html-webpack-plugin mini-css-extract-plugin webpack webpack-cli webpack-dev-middleware
 
 ### 3-4. webpack command line 추가 `package.json`
 ```json
@@ -206,4 +206,72 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 plugins: [
   new CleanWebpackPlugin()
 ]
+```
+
+## 6. HMR (Hot Module Replacement)
+> webpack 소스를 수정할 때마다 build를 해서 확인해야 하는 불편함이 있다. development 모드에서 수정할 때마다 전체 새로고침 없이 모든 종류의 모듈들을 런타임 시점에 업데이트 되게 해주는 HMR (Hot Module Replacement)을 사용한다. (production 모드에서 사용하기 위한 것이 아니다.)
+
+* 라이브러리 설치
+> npm install --save-dev express webpack-hot-middleware webpack-dev-middleware
+
+### 6-1 webpack-hot-middleware
+webpack-hot-middleware는 webpack dev server의 hot reloading과 Express 서버를 결합시키는 매우 유용한 툴이다.     
+웹팩으로 빌드한 정적파일을 처리하는 익스프레스 스타일 미들웨어이다. 웹팩 패키지가 제공하는 함수를 실행하면 Compiler 타입의 인스턴스를 반환해준다. 웹팩 설정 객체를 함수 인자로 전달하는데 보통은 설정 파일 `webpack.config.js`에 있는 코드를 가져다 사용한다.
+
+* `webpack.config.js` plugins 수정
+```js
+const webpack = require('webpack');
+plugins: [
+  //...
+  new webpack.HotModuleReplacementPlugin()
+]
+```
+
+### 6-2 node server 설정
+* `package.json` webpack command line 수정
+```js
+{
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack",
+    "start": "cross-env NODE_ENV=development node webpack/dev"
+  }
+}
+```
+
+* `webpack/dev.js` 파일 생성
+```js
+const webpack = require('webpack');
+const webpackConfig = require('../webpack.config');
+const compiler = webpack(webpackConfig);
+const webpackDevMiddleware = require('webpack-dev-middleware');
+const webpackHotMiddleware = require('webpack-hot-middleware');
+
+const express = require('express');
+const app = express();
+
+app.use(webpackDevMiddleware(compiler, {
+  hot: true,
+  noInfo: true, 
+  publicPath: webpackConfig.output.publicPath,
+  stats: 'minimal',
+  historyApiFallback: true
+}));
+
+app.use(webpackHotMiddleware(compiler));
+```
+
+* `webpack/entry.js` 파일 생성
+```js
+import 'core-js/stable' // IE polyfill
+require('../src/app.js');
+
+if(module.hot) {
+  module.hot.accept(); // This will make current module replaceable
+}
+```
+
+* `webpack.config.js` 파일 수정
+```js
+const isDev = process.env.NODE_ENV === 'development' // 모드 구분
+
 ```

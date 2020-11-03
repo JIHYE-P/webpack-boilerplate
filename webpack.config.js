@@ -2,13 +2,17 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const path = require('path');
+const webpack = require('webpack');
+
+const isDev = process.env.NODE_ENV === 'development'
 
 module.exports = {
-  mode: 'development',
-  entry: './src/app.js',
+  mode: isDev ? 'development' : 'production',
+  entry: isDev ? ['webpack-hot-middleware/client', './webpack/entry.js'] : './webpack/entry.js',
   output: {
     filename: '[name].js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/'
   },
   module: {
     rules: [
@@ -48,7 +52,8 @@ module.exports = {
       filename: 'assets/[name].css',
       chunkFilename: 'assets/[id].css'
     }),
-    new CleanWebpackPlugin()
+    new CleanWebpackPlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ],
   optimization: {
     minimize: false
