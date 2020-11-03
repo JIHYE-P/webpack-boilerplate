@@ -134,5 +134,76 @@ plugins: [
 
 webpack 실행하면 `dist/assets/main.css`가 빌드된다.
 
- 
+### 4-3 file 빌드
+```js
+{
+  test: /\.(png|jpg|gif|svg)$/,
+  use: [
+    {
+      loader: 'url-loader',
+      options: {
+        limit: 0, // [value]kb 미만 파일만 data-url로 처리
+        name: 'assets/[hash].[ext]' // 파일명 형식
+      }
+    }
+  ]
+}
+```
 
+### 4-4 React 설정
+바벨(babel)은 ES6에서 ES5로 자바스크립트를 변환해주는 역활을 한다.
+> npm install --save-dev @babel/preset-env @babel/preset-react @babel/plugin-transform-runtime
+
+* `.babelrc` 파일 생성
+```js
+{
+  "presets": ["@babel/preset-env", "@babel/preset-react"]
+}
+```
+바벨이 ES6와 리엑트를 ES5로 변환할 수 있게 해준다.
+
+* `./public/index.html` 수정
+```html
+<div id="root"></div>
+```
+
+* `./src/components/root.js` 생성
+```js
+import React from 'react';
+
+const Root = ({...props}) => <h1 {...props}>Hello React</h1> 
+export default Root;
+```
+
+* `./src/app.js` 생성
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Root from './components/root';
+
+ReactDOM.render(<Root />, document.getElementById('root'))
+```
+
+* `webpack.config.js` 수정
+```js
+entry: './src/app.js', //빌드할 파일변경
+module: {
+  rules: [
+    //...
+    {
+      test: /\.(js|jsx)$/,
+      use: ['babel-loader']
+    }
+  ]
+}
+```
+
+## 5. clean-webpack-plugin 
+`clean-webpack-plugin`는 빌드 할 때마다 안쓰는 파일들을 삭제해준다.
+* `webpack.config.js` 수정
+```js
+const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+plugins: [
+  new CleanWebpackPlugin()
+]
+```
