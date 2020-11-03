@@ -37,16 +37,16 @@
 * Loader가 변환하는 동안 플러그인은 bundle optimization, asset management and injection of environment과 같은 일을 진행할 수 있다.
 
 ## 3. webpack 설치
-1. package.json 설치
+### 3-1. package.json 설치
 > npm init -y
 
-2. webpack 설치
+### 3-2. webpack 설치
 > npm i webpack webpack-cli --save-dev
 
-3. webpack 라이브러리 설치
+### 3-3. webpack 라이브러리 설치
 > npm install --save-dev @babel/core @babel/preset-env @babel/preset-react babel-loader clean-webpack-plugin css-loader html-loader file-loader url-loader node-sass react react-dom sass-loader style-loader cross-env html-webpack-plugin mini-css-extract-plugin webpack webpack-cli webpack-dev-middleware webpack-dev-server
 
-4. webpack command line 추가 `package.json`
+### 3-4. webpack command line 추가 `package.json`
 ```json
 "scripts": {
   "dev": "webpack --mode development",
@@ -54,7 +54,7 @@
 }
 ```
 
-5. webpack 환경설정 `webpack.config.js`
+### 3-5. webpack 환경설정 `webpack.config.js`
 ```js
 module.exports = {
   mode: 'development', //webpack 모드 옵션 1. development 개발모드, 2. production 빌드모드, 3. none
@@ -66,8 +66,73 @@ module.exports = {
 }
 ```
 
-6. webpack 실행
+### 3-6. webpack 실행
 > npm run start
 
 `dist` 폴더가 생성되면서 `/src/index.js` 파일을 빌드한 `main.js`파일이 생성된다.
+
+## 4. webpack loader, plugin 설정
+_loader 문법_
+```
+module : {
+  rules: {
+    test: '적용할 파일 정규식',
+    use: [
+      {
+        loader: '사용할 로더 이름',
+        options: { 로더 옵션 }
+      }
+    ]
+  }
+}
+```
+### 4-1 HTML 빌드
+* `./public/index.html` html 파일생성
+* `HtmlWebPackPlugin` 은 웹팩이 html 파일을 읽어서 파일을 빌드할 수 있게 해준다
+```js
+// webpack.config.js
+module: {
+  rules: [
+    {
+      test: /\.html$/,
+      use: ['html-loader']
+    }
+  ]
+},
+plugins: [
+  new HtmlWebpackPlugin({template: './public/index.html'})
+],
+optimization: {
+  minimize: false
+}
+```
+
+### 4-2 CSS, SASS 빌드
+* `/src/style.css` 파일 생성
+* `/src/index.js`에 `style.css` import 적용하기
+* CSS Plugin 설정
+```js
+// webpack.config.js
+rules: [
+  {
+    test: /\.(sa|sc|c)ss$/,
+    use: [
+      {loader: MiniCssExtractPlugin.loader},
+      'css-loader',
+      'sass-loader'
+    ]
+  }
+]
+plugins: [
+  new MiniCssExtractPlugin({
+    filename: 'assets/[name].css',
+    chunkFilename: 'assets/[id].css'
+  })
+],
+```
+> npm start run 
+
+webpack 실행하면 `dist/assets/main.css`가 빌드된다.
+
+ 
 
