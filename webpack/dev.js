@@ -8,11 +8,10 @@ const express = require('express');
 const app = express();
 
 app.use(webpackDevMiddleware(compiler, {
-  hot: true,
-  noInfo: true, 
-  publicPath: webpackConfig.output.publicPath,
-  stats: 'minimal',
-  historyApiFallback: true
+  publicPath: webpackConfig.output.publicPath
 }));
 
 app.use(webpackHotMiddleware(compiler));
+app.listen(3000, function () {
+  console.log('http://localhost:3000');
+});

@@ -1,4 +1,4 @@
 import React from 'react';
 
-const Root = ({...props}) => <h1 {...props}>Hello React</h1> 
+const Root = ({...props}) => <h1 {...props}>Hello</h1> 
 export default Root;

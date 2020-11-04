@@ -258,20 +258,42 @@ app.use(webpackDevMiddleware(compiler, {
 }));
 
 app.use(webpackHotMiddleware(compiler));
+app.listen(3000, () => console.log('http://localhost:3000'));
 ```
 
 * `webpack/entry.js` 파일 생성
 ```js
-import 'core-js/stable' // IE polyfill
 require('../src/app.js');
 
 if(module.hot) {
-  module.hot.accept(); // This will make current module replaceable
+  module.hot.accept();
 }
 ```
 
 * `webpack.config.js` 파일 수정
 ```js
 const isDev = process.env.NODE_ENV === 'development' // 모드 구분
-
+module.exports = {
+  mode: isDev ? 'development' : 'production',
+  entry: isDev ? ['webpack-hot-middleware/client', './webpack/entry.js'] : './webpack/entry.js',
+  // ...
+  plugins: [
+    // ...
+    new webpack.HotModuleReplacementPlugin()
+  ]
+}
 ```
+> npm run start
+
+webpack 실행 시 아래와 같은 오류가 발생했다. `webpackDevMiddleware` 미들웨어에 알 수 없는 옵션이 사용되었다는 내용이다. 전에 설정할 때는 이런 오류가 없었는데 아마 버전 업데이트 되면서 전에 쓰던 옵션들이 없어진거 같다.
+
+> Invalid options object. Dev Middleware has been initialized using an options object that does not match the API schema. options has an unknown property 'historyApiFallback'. These properties are valid. object { mimeTypes?, writeToDisk?, methods?, headers?, publicPath?, serverSideRender?, outputFileSystem?, index? }
+
+`webpack/dev.js` 파일에서 `publicPath` 옵션만 설정하고 나머지는 삭제한다.
+```js
+app.use(webpackDevMiddleware(compiler, {
+  publicPath: webpackConfig.output.publicPath
+}));
+```
+
+다시 실행하여 `http://localhost:3000`로 접속하여 css, scss, js 등 파일을 수정하면 새로고침하지 않아도 바로 적용되는걸 확인 할 수 있다.

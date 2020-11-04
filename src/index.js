@@ -1,3 +1,6 @@
-import './style.css';
+import React from 'react';
+import ReactDOM from 'react-dom';
+import Root from './components/root';
+import './style.scss';
 
-console.log('hello world~')
+ReactDOM.render(<Root />, document.getElementById('root'))
