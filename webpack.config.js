@@ -1,6 +1,8 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+
 const path = require('path');
 const webpack = require('webpack');
 
@@ -23,7 +25,12 @@ module.exports = {
       {
         test: /\.(sa|sc|c)ss$/,
         use: [
-          {loader: MiniCssExtractPlugin.loader},
+          isDev ? 'style-loader' : {
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+              publicPath: '/'
+            }
+          },
           'css-loader',
           'sass-loader'
         ]
@@ -56,6 +63,9 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin()
   ],
   optimization: {
-    minimize: !isDev
+    minimize: !isDev,
+    minimizer: [
+      !isDev && new OptimizeCssAssetsPlugin({})
+    ]
   }
 }

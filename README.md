@@ -71,7 +71,7 @@ module.exports = {
 
 `dist` 폴더가 생성되면서 `/src/index.js` 파일을 빌드한 `main.js`파일이 생성된다.
 
-## 4. webpack loader, plugin 설정
+## 4. webpack loader 설정
 _loader 문법_
 ```
 module : {
@@ -117,7 +117,12 @@ rules: [
   {
     test: /\.(sa|sc|c)ss$/,
     use: [
-      {loader: MiniCssExtractPlugin.loader},
+      {
+        loader: MiniCssExtractPlugin.loader,
+        options: {
+          publicPath: '/'
+        }
+      },
       'css-loader',
       'sass-loader'
     ]
@@ -198,23 +203,53 @@ module: {
 }
 ```
 
-## 5. clean-webpack-plugin 
+## 5. webpack plugin 설정
+### 5-1 clean-webpack-plugin 
 `clean-webpack-plugin`는 빌드 할 때마다 안쓰는 파일들을 삭제해준다.
 * `webpack.config.js` 수정
 ```js
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
+
 plugins: [
   new CleanWebpackPlugin()
 ]
 ```
 
-## 6. HMR (Hot Module Replacement)
+### 5-2 webpack.ProvidePlugin
+모듈에서 임의의 변수로 식별될 때마다 모듈이 자동으로 로드된다. 
+```js
+plugins: [
+  new webpack.ProvidePlugin({
+    $: '모듈경로',
+    isDev: '모듈경로',
+  })
+]
+```
+
+## 6. webpack optimization 설정
+### 6-1 new OptimizeCssAssetsPlugin 
+build 할 때 .css, .scss 압축파일로 배포하기 (한줄처리)     
+
+> npm install --save-dev optimize-css-assets-webpack-plugin
+
+`webpack.config.js` 수정
+```js
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+optimization: {
+  minimize: !isDev,
+  minimizer: [
+    !isDev && new OptimizeCssAssetsPlugin({})
+  ]
+}
+```
+
+## 7. HMR (Hot Module Replacement)
 > webpack 소스를 수정할 때마다 build를 해서 확인해야 하는 불편함이 있다. development 모드에서 수정할 때마다 전체 새로고침 없이 모든 종류의 모듈들을 런타임 시점에 업데이트 되게 해주는 HMR (Hot Module Replacement)을 사용한다. (production 모드에서 사용하기 위한 것이 아니다.)
 
 * 라이브러리 설치
 > npm install --save-dev express webpack-hot-middleware webpack-dev-middleware
 
-### 6-1 webpack-hot-middleware
+### 7-1 webpack-hot-middleware
 webpack-hot-middleware는 webpack dev server의 hot reloading과 Express 서버를 결합시키는 매우 유용한 툴이다.     
 웹팩으로 빌드한 정적파일을 처리하는 익스프레스 스타일 미들웨어이다. 웹팩 패키지가 제공하는 함수를 실행하면 Compiler 타입의 인스턴스를 반환해준다. 웹팩 설정 객체를 함수 인자로 전달하는데 보통은 설정 파일 `webpack.config.js`에 있는 코드를 가져다 사용한다.
 
@@ -227,7 +262,7 @@ plugins: [
 ]
 ```
 
-### 6-2 node server 설정
+### 7-2 node server 설정
 * `package.json` webpack command line 수정
 ```js
 {
@@ -297,3 +332,29 @@ app.use(webpackDevMiddleware(compiler, {
 ```
 
 다시 실행하여 `http://localhost:3000`로 접속하여 css, scss, js 등 파일을 수정하면 새로고침하지 않아도 바로 적용되는걸 확인 할 수 있다.
+
+## 참고
+
+### CSS Build HMR 옵션
+링크 참고 [mini-css-extract-plugin HMR](https://github.com/webpack-contrib/mini-css-extract-plugin#hot-module-reloading-hmr)
+
+**개발모드에서 css, scss import 시 아래와 같은 에러 발생 시**
+> Module build failed (from ./node_modules/mini-css-extract-plugin/dist/loader.js): ReferenceError: document is not defined
+
+`webpack.config.js`파일 수정
+```js
+{
+  test: /\.(sa|sc|c)ss$/,
+  use: [
+    isDev ? 'style-loader' : {
+      loader: MiniCssExtractPlugin.loader,
+      options: {
+        publicPath: '/'
+      }
+    },
+    'css-loader',
+    'sass-loader'
+  ]
+},
+```
+
