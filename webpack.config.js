@@ -60,12 +60,16 @@ module.exports = {
       chunkFilename: 'assets/[id].css'
     }),
     new CleanWebpackPlugin(),
+    new OptimizeCssAssetsPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ],
+  resolve: {
+    extensions: ['.js', '.jsx'],
+    alias: {
+      '~/*': path.resolve(__dirname, './src/*')
+    }
+  },
   optimization: {
-    minimize: !isDev,
-    minimizer: [
-      !isDev && new OptimizeCssAssetsPlugin({})
-    ]
+    minimize: !isDev
   }
 }

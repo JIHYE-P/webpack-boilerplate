@@ -226,8 +226,7 @@ plugins: [
 ]
 ```
 
-## 6. webpack optimization 설정
-### 6-1 new OptimizeCssAssetsPlugin 
+### 5-3 optimize-css-assets-webpack-plugin
 build 할 때 .css, .scss 압축파일로 배포하기 (한줄처리)     
 
 > npm install --save-dev optimize-css-assets-webpack-plugin
@@ -235,21 +234,38 @@ build 할 때 .css, .scss 압축파일로 배포하기 (한줄처리)
 `webpack.config.js` 수정
 ```js
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-optimization: {
-  minimize: !isDev,
-  minimizer: [
-    !isDev && new OptimizeCssAssetsPlugin({})
-  ]
-}
+plugins: [
+  // ...
+  new OptimizeCssAssetsPlugin()
+]
 ```
 
-## 7. HMR (Hot Module Replacement)
+## 6. webpack optimization 설정
+
+### 7. resolve alias + jsconfig.json
+webpack `resolve` 옵션 `alias`는 `import` 또는 `require` 특정 모듈을 더 쉽게 가져 오거나 요구할 별칭을 만듭니다. 하지만 `alias`로는 에디터 내에 있는 파일들을 import 할 때 `alias` 맞게 파일이 불러오지 못하는 경우가 생긴다. VS code내에서 사용되는 `jsconfig.json`을 이용하여 import 시 `alias`에 맞게 자동완성되는 기능을 적용한다.
+
+`jsconfig.json` 파일 생성 및 내용 작성
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+    }
+  }
+}
+```
+`src`폴더 내의 `/*` 스키마를 통해 폴더 내의 모든 파일을 autocomplete화 한다.
+
+
+## 8. HMR (Hot Module Replacement)
 > webpack 소스를 수정할 때마다 build를 해서 확인해야 하는 불편함이 있다. development 모드에서 수정할 때마다 전체 새로고침 없이 모든 종류의 모듈들을 런타임 시점에 업데이트 되게 해주는 HMR (Hot Module Replacement)을 사용한다. (production 모드에서 사용하기 위한 것이 아니다.)
 
 * 라이브러리 설치
 > npm install --save-dev express webpack-hot-middleware webpack-dev-middleware
 
-### 7-1 webpack-hot-middleware
+### 8-1 webpack-hot-middleware
 webpack-hot-middleware는 webpack dev server의 hot reloading과 Express 서버를 결합시키는 매우 유용한 툴이다.     
 웹팩으로 빌드한 정적파일을 처리하는 익스프레스 스타일 미들웨어이다. 웹팩 패키지가 제공하는 함수를 실행하면 Compiler 타입의 인스턴스를 반환해준다. 웹팩 설정 객체를 함수 인자로 전달하는데 보통은 설정 파일 `webpack.config.js`에 있는 코드를 가져다 사용한다.
 
@@ -262,7 +278,7 @@ plugins: [
 ]
 ```
 
-### 7-2 node server 설정
+### 8-2 node server 설정
 * `package.json` webpack command line 수정
 ```js
 {
