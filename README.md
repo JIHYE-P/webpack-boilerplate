@@ -245,18 +245,31 @@ plugins: [
 ### 7. resolve alias + jsconfig.json
 webpack `resolve` 옵션 `alias`는 `import` 또는 `require` 특정 모듈을 더 쉽게 가져 오거나 요구할 별칭을 만듭니다. 하지만 `alias`로는 에디터 내에 있는 파일들을 import 할 때 `alias` 맞게 파일이 불러오지 못하는 경우가 생긴다. VS code내에서 사용되는 `jsconfig.json`을 이용하여 import 시 `alias`에 맞게 자동완성되는 기능을 적용한다.
 
-`jsconfig.json` 파일 생성 및 내용 작성
+* `jsconfig.json`
 ```json
 {
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"],
+      "~/*": ["./src/*"],
     }
-  }
+  },
+  "exclude": [
+    "node_modules"
+  ]
 }
 ```
-`src`폴더 내의 `/*` 스키마를 통해 폴더 내의 모든 파일을 autocomplete화 한다.
+`src`폴더 내의 `/*` 스키마를 통해 폴더 내의 모든 파일을 autocomplete화 한다. 예를들어 `./src/util/index.js` 파일을 import 할 때 `~/util/hello` 로 할 수 있다.
+
+* `webpack.config.js`
+```js
+resolve: {
+  extensions: ['.js', '.jsx'], // 파일 확장자 없이 해석하기 위한 import index.js -> import index 
+  alias: {
+    '~': path.resolve(__dirname, 'src')
+  }
+},
+```
 
 
 ## 8. HMR (Hot Module Replacement)

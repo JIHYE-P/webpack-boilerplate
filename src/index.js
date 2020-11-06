@@ -4,4 +4,7 @@
 // ReactDOM.render(<Root />, document.getElementById('root'))
 
 import './main.scss';
+import hello from '~/util/hello';
+
+hello();
 console.log('index.js');
