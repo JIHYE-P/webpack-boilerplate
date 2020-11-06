@@ -271,7 +271,6 @@ resolve: {
 },
 ```
 
-
 ## 8. HMR (Hot Module Replacement)
 > webpack 소스를 수정할 때마다 build를 해서 확인해야 하는 불편함이 있다. development 모드에서 수정할 때마다 전체 새로고침 없이 모든 종류의 모듈들을 런타임 시점에 업데이트 되게 해주는 HMR (Hot Module Replacement)을 사용한다. (production 모드에서 사용하기 위한 것이 아니다.)
 
@@ -364,7 +363,7 @@ app.use(webpackDevMiddleware(compiler, {
 
 ## 참고
 
-### CSS Build HMR 옵션
+### 1. CSS Build HMR 옵션
 링크 참고 [mini-css-extract-plugin HMR](https://github.com/webpack-contrib/mini-css-extract-plugin#hot-module-reloading-hmr)
 
 **개발모드에서 css, scss import 시 아래와 같은 에러 발생 시**
@@ -386,4 +385,67 @@ app.use(webpackDevMiddleware(compiler, {
   ]
 },
 ```
+
+### 2. HTML 파일
+> [webpack-dev-middleware](https://jeonghwan-kim.github.io/dev/2020/07/18/webpack-dev-middleware.html#%EC%82%AC%EC%9A%A9%EC%98%88-3-html-webpack-plugin%EC%9D%84-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B3%A0-%EC%9E%88%EB%8B%A4%EB%A9%B4) 링크참고
+
+웹팩이 js, css, 이미지 파일을 번들링한 뒤 서버에서 제공하는 html 파일에서 이를 로딩한다. 만약 html 파일까지도 웹팩 빌드 프로세스에 추가하려면 html-webpack-plugin을 사용할 것이다.     
+이렇게되면 webpack-dev-middleware를 사용해 서버를 구성할 때 html 파일을 서비스해야하는데 웹팩이 만든 html파일의 위치를 찾아야 한다.     
+webpack() 함수가 반환한 compiler 객체는 outputFileSystem이란 객체를 가지고 있다. 빌드한 결과물을 위한 별도의 파일 시스템 인터페이스인 셈이다. 이 객체 메소드 중에 readFile()로 빌드한 결과물의 내용을 읽을 수 있다.     
+
+* `/webpack/dev.js` 
+```js
+const RESULT_FILE = path.join(compiler.outputPath, 'index.html');
+app.use(async(req, res, next) => {
+  if(!req.method === 'GET') return next();
+  
+  if (process.env.NODE_ENV === "development") {
+    compiler.outputFileSystem.readFile(RESULT_FILE, (err, result) => {
+      if(err) return next(err);
+      res.set('content-type','text/html');
+      res.send(result);
+      res.end();
+    });
+  }
+
+  if (process.env.NODE_ENV === "production") {
+    res.sendFile(path.join(__dirname, "../public/index.html"));
+  }
+});
+```
+
+### 3. module.hot entry.js 정리
+```js
+require('../src/index.js');
+if(module.hot) {
+  let prevTimeoutIndex = -1;
+  let prevIntervalIndex = -1;
+  let prevRAFIndex = -1;
+  module.hot.accept((err) => {
+    console.log('err', err);
+  });
+  module.hot.dispose(data => {
+    console.log(module.hot.status());
+    const tIdx = setTimeout(() => {});
+    for (let i = prevTimeoutIndex; i < tIdx; i++) clearTimeout(i);
+    prevTimeoutIndex = tIdx;
+    const iIdx = setInterval(() => {});
+    for (let i = prevIntervalIndex; i < iIdx; i++) clearInterval(i);
+    prevIntervalIndex = iIdx;
+    const rIdx = requestAnimationFrame(() => {});
+    for (let i = prevRAFIndex; i < rIdx; i++) cancelAnimationFrame(i);
+    prevRAFIndex = rIdx;
+  });
+}
+```
+setTimeout(() => {}) 를 콘솔로 찍어봤을 때, 숫자가 나오는데 그 숫자의 의미는 해당 브라우저에서 setTimeout 함수 사용 횟수이다. setTimeout 를 해제하기 위해 clearTimeout 함수를 이용하는데 사용법은 다음과 같다
+```js
+const timeout = setTimeout(() => console.log('hi'), 1000);
+clearTimeouf(timeout);
+```
+이렇게 clearTimeout를 사용하는데 함수 인자값은 setTimeout를 담고 있는 변수 즉 숫자인건데, 그 숫자는 해당 setTimeout 함수의 key 값 인것이다. ...setInterval, requestAnimationFrame 도 만찬가지     
+
+위 코드가 하는 기능은 HMR 모듈이 다시 생성될 때 수정 전에 사용되었던 setTimeout, setInterval, requestAnimationFrame 함수를 모두 멈추고 다시 실행되로록 해준다. (함수들이 겹치지 않기위해)
+
+
 
