@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import App from './components/app';
 
 import './main.scss';
-import './tailwind.css';
+import './tailwind.scss';
 import hello from '~/util/hello';
 
 // hello();

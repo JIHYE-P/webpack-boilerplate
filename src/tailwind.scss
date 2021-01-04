@@ -1,0 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.btn-main {
+  @apply p-3 border-2 border-gray-600 text-white bg-gray-700 rounded;
+}

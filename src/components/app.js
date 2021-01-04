@@ -22,6 +22,7 @@ const App = ({...props}) => {
 
   console.log(posts);
   return <>
+    <button className='btn-main'>button</button>
     <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-100">
       {posts.map((post, i) => <HorizontalCard key={`post-${i}`} post={post} />)}
     </div>
