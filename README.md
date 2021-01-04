@@ -361,6 +361,39 @@ app.use(webpackDevMiddleware(compiler, {
 
 다시 실행하여 `http://localhost:3000`로 접속하여 css, scss, js 등 파일을 수정하면 새로고침하지 않아도 바로 적용되는걸 확인 할 수 있다.
 
+## Tailwind CSS & Postcss 
+[Tailwind CSS](https://tailwindcss.com/)     
+[Postcss](https://postcss.org/)     
+
+**[**설치하기**](https://tailwindcss.com/docs/installation)**
+> npm install tailwindcss@latest postcss@latest autoprefixer@latest
+
+**[tailwind.config.js 구성설정](https://tailwindcss.com/docs/configuration)**
+> npx tailwindcss init --full
+
+**postcss.config.js**
+> npx tailwindcss init -p
+
+**[webpack postcss-loader 설정](https://github.com/postcss/postcss#usage)**
+> npm i -D postcss-loader
+
+**Tailwind 구성파일 만들기**     
+`tailwind.css` 생성
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+**Tailwind build css 빌드하기**     
+`package.json`
+```json
+"scripts": {
+  //...
+  "postcss": "postcss tailwind.css --output src/tailwind.css"
+}
+```
+
 ## 참고
 
 ### 1. CSS Build HMR 옵션
@@ -448,4 +481,4 @@ clearTimeouf(timeout);
 위 코드가 하는 기능은 HMR 모듈이 다시 생성될 때 수정 전에 사용되었던 setTimeout, setInterval, requestAnimationFrame 함수를 모두 멈추고 다시 실행되로록 해준다. (함수들이 겹치지 않기위해)
 
 
-## webpack silence output
+### 4. webpack silence output

@@ -1,10 +1,9 @@
 import React from 'react';
-import Box from './box';
 
 const Root = ({...props}) => {
   return <>
-    <h1 {...props}>Hello</h1>
-    <Box />
+    <h1 {...props} className="p-4 bg-gray-400">Hello</h1>
+    {/* <Button primary color="green">A styled button</Button> */}
   </>
 } 
 export default Root;
