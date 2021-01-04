@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "cross-env NODE_ENV=development node webpack/dev",
     "build": "cross-env NODE_ENV=production webpack",
-    "postcss": "postcss src/tailwind.css --output src/style.css"
+    "postcss": "postcss tailwind.css --output src/tailwind.css"
   },
   "keywords": [],
   "author": "jihye <qkrwlgp76@gmail.com>",
