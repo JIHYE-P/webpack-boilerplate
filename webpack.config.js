@@ -2,6 +2,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const HtmlWebpackHamlPlugin = require('html-webpack-haml-plugin');
 
 const path = require('path');
 const webpack = require('webpack');
@@ -55,7 +56,14 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({template: './public/index.html'}),
+    new HtmlWebpackPlugin({
+      template: './public/index.html'
+    }),
+    new HtmlWebpackPlugin({
+      template : './src/index.haml',
+      filetype : 'haml'
+    }),
+    new HtmlWebpackHamlPlugin(),
     new MiniCssExtractPlugin({
       filename: 'assets/[name].css',
       chunkFilename: 'assets/[id].css'
