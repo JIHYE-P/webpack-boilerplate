@@ -24,6 +24,10 @@ module.exports = {
         use: ['html-loader']
       },
       {
+        test: /\.html\.hamlc$/,
+        loader: 'haml-loader'
+      },
+      {
         test: /\.(sa|sc|c)ss$/,
         use: [
           isDev ? 'style-loader' : {
