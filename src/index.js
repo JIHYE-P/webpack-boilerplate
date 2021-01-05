@@ -7,4 +7,5 @@ import './tailwind.scss';
 // ReactDOM.render(<App />, document.getElementById('root'));
 
 import template from './templates/index.html.hamlc';
+const title = 'title'
 document.body.innerHTML = template

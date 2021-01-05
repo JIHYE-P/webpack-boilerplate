@@ -1,2 +1,5 @@
-.template
-  %h1= @title
+%section.container
+  %h1{:id => "title"} title
+  %h2= "subtitle"
+  .content = "content"
+  %span.label#label-one= "label text"
