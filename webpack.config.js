@@ -59,11 +59,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './public/index.html'
     }),
-    new HtmlWebpackPlugin({
-      template : './src/index.haml',
-      filetype : 'haml'
-    }),
-    new HtmlWebpackHamlPlugin(),
     new MiniCssExtractPlugin({
       filename: 'assets/[name].css',
       chunkFilename: 'assets/[id].css'
