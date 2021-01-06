@@ -21,8 +21,7 @@ const App = ({...props}) => {
   //   })();
   // }, []);
 
-  return <>
-    <h1 className="text-4xl text-indigo-300">How to Style Your React Apps with Less Code Using Tailwind CSS, Styled Components, and Twin Macro</h1>
+  return <h1 className="text-4xl text-indigo-300">How to Style Your React Apps with Less Code Using Tailwind CSS, Styled Components, and Twin Macro</h1>
     {/* <StyledIndex>
       <h1 className="text-4xl text-indigo-300">How to Style Your React Apps with Less Code Using Tailwind CSS, Styled Components, and Twin Macro</h1>
     </StyledIndex> */}
@@ -40,6 +39,5 @@ const App = ({...props}) => {
       <List> {recipeData.map((data, i) => <ListItem key={`recipe-${i}`} recipe={data} />)} </List>
     </div>
     <Login /> */}
-  </>
 } 
 export default App;

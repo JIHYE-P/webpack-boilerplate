@@ -9,9 +9,9 @@ const pathResolve = (...v) => path.resolve(__dirname, '..',...v);
 
 module.exports = {
   mode: 'production',
-  entry: '../src/index.js',
+  entry: './src/index.js',
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: pathResolve('dist'),
     filename: 'build.js',
     publicPath: '/'
   },
@@ -58,7 +58,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new HtmlWebPackPlugin({ template: './public/index.html' }),
+    new HtmlWebpackPlugin({ template: './public/index.html' }),
     new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
       chunkFilename: '[id].[hash].css'
