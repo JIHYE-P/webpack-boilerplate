@@ -9,7 +9,7 @@ const pathResolve = (...v) => path.resolve(__dirname, '..',...v);
 
 module.exports = {
   mode: 'production',
-  entry: pathResolve('webpack/entry.js'),
+  entry: '../src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'build.js',
@@ -23,15 +23,11 @@ module.exports = {
       },
       {
         test: /\.html\.hamlc$/,
-        loader: 'haml-loader'
+        use: ['haml-loader']
       },
       {
         test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader',
-        query: {
-          presets: ['es2015', 'react']
-        }
+        use: ['babel-loader'],
       },
       {
         test: /\.(sa|sc|c)ss$/,

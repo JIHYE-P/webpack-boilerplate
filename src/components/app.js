@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Login from './login';
-import List from './List';
-import ListItem from './listItem';
-import Post from './post';
-import HorizontalCard from './horizontalCard';
-import recipeData from '../util/recipe';
-import StyledIndex from '../styles';
+// import axios from 'axios';
+// import Login from './login';
+// import List from './List';
+// import ListItem from './listItem';
+// import Post from './post';
+// import HorizontalCard from './horizontalCard';
+// import recipeData from '../util/recipe';
+// import StyledIndex from '../styles';
 
 const App = ({...props}) => {
   // const [posts, setPosts] = useState([]);
@@ -22,9 +22,10 @@ const App = ({...props}) => {
   // }, []);
 
   return <>
-    <StyledIndex>
+    <h1 className="text-4xl text-indigo-300">How to Style Your React Apps with Less Code Using Tailwind CSS, Styled Components, and Twin Macro</h1>
+    {/* <StyledIndex>
       <h1 className="text-4xl text-indigo-300">How to Style Your React Apps with Less Code Using Tailwind CSS, Styled Components, and Twin Macro</h1>
-    </StyledIndex>
+    </StyledIndex> */}
     {/* <button className='btn-main'>button</button>
     <div className="p-5 grid grid-cols-1 md:grid-cols-2 gap-4 bg-gray-100">
       {posts.map((post, i) => <HorizontalCard key={`post-${i}`} post={post} />)}

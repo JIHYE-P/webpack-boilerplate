@@ -23,7 +23,11 @@ module.exports = {
       },
       {
         test: /\.html\.hamlc$/,
-        loader: 'haml-loader'
+        use: ['haml-loader']
+      },
+      {
+        test: /\.(js|jsx)$/,
+        use: ['babel-loader']
       },
       {
         test: /\.(sa|sc|c)ss$/,
@@ -45,10 +49,6 @@ module.exports = {
             }
           }
         ]
-      },
-      {
-        test: /\.(js|jsx)$/,
-        use: ['babel-loader']
       }
     ]
   },
