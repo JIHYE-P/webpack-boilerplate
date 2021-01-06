@@ -27,9 +27,9 @@ app.use(async(req, res, next) => {
       res.end();
     });
   }
-  // if (process.env.NODE_ENV === "production") {
-  //   res.sendFile(path.join(__dirname, "../public/index.html"));
-  // }
+  if (process.env.NODE_ENV === "production") {
+    res.sendFile(path.join(__dirname, "../public/index.html"));
+  }
 });
 
 app.listen(3000, function () {

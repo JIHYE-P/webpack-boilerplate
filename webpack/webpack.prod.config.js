@@ -26,6 +26,14 @@ module.exports = {
         loader: 'haml-loader'
       },
       {
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        query: {
+          presets: ['es2015', 'react']
+        }
+      },
+      {
         test: /\.(sa|sc|c)ss$/,
         use: [
           {
@@ -50,23 +58,11 @@ module.exports = {
             }
           }
         ]
-      },
-      {
-        test: /\.(js|jsx)$/,
-        exclude: /node_modules/,
-        use: ['babel-loader'],
-        options: {
-          presets: [ '@babel/preset-env', '@babel/preset-react' ]
-        }
-      },
-      { 
-        test: /\.txt$/, 
-        use: 'raw-loader' 
       }
     ]
   },
   plugins: [
-    new HtmlWebpackPlugin({template: './public/index.html'}),
+    new HtmlWebPackPlugin({ template: './public/index.html' }),
     new MiniCssExtractPlugin({
       filename: '[name].[hash].css',
       chunkFilename: '[id].[hash].css'
