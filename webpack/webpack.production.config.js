@@ -5,14 +5,14 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const path = require('path');
 const webpack = require('webpack');
-
+const pathResolve = (...v) => path.resolve(__dirname, '..',...v);
 
 module.exports = {
   mode: 'production',
-  entry: './webpack/entry.js',
+  entry: pathResolve('webpack/entry.js'),
   output: {
-    filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
+    filename: 'build.js',
     publicPath: '/'
   },
   module: {
@@ -20,6 +20,10 @@ module.exports = {
       {
         test: /\.html$/,
         use: ['html-loader']
+      },
+      {
+        test: /\.html\.hamlc$/,
+        loader: 'haml-loader'
       },
       {
         test: /\.(sa|sc|c)ss$/,
@@ -49,29 +53,37 @@ module.exports = {
       },
       {
         test: /\.(js|jsx)$/,
-        use: ['babel-loader']
+        exclude: /node_modules/,
+        use: ['babel-loader'],
+        options: {
+          presets: [ '@babel/preset-env', '@babel/preset-react' ]
+        }
+      },
+      { 
+        test: /\.txt$/, 
+        use: 'raw-loader' 
       }
     ]
   },
   plugins: [
     new HtmlWebpackPlugin({template: './public/index.html'}),
     new MiniCssExtractPlugin({
-      // filename: 'assets/[name].css',
-      // chunkFilename: 'assets/[id].css'
       filename: '[name].[hash].css',
       chunkFilename: '[id].[hash].css'
     }),
     new CleanWebpackPlugin(),
-    new OptimizeCssAssetsPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ],
   resolve: {
     extensions: ['.js', '.jsx'],
     alias: {
-      '~': path.resolve(__dirname, 'src')
+      '~': path.join(__dirname, 'src')
     }
   },
   optimization: {
-    minimize: true
+    minimize: true,
+    minimizer: [
+      new OptimizeCssAssetsPlugin()
+    ]
   }
 }

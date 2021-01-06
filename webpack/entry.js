@@ -1,6 +1,7 @@
 // import 'core-js/stable' // IE polyfill
 
 require('../src/index.js');
+
 if(module.hot) {
   // module.hot.accept();
   let prevTimeoutIndex = -1;

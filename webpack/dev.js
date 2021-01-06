@@ -1,6 +1,7 @@
 const webpack = require('webpack');
-const webpackConfig = require('../webpack.config');
-const compiler = webpack(webpackConfig);
+const config = require('./webpack.dev.config.js');
+const compiler = webpack(config);
+
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 
@@ -9,7 +10,7 @@ const express = require('express');
 const app = express();
 
 app.use(webpackDevMiddleware(compiler, {
-  publicPath: webpackConfig.output.publicPath
+  publicPath: config.output.publicPath
 }));
 
 app.use(webpackHotMiddleware(compiler));
@@ -26,10 +27,9 @@ app.use(async(req, res, next) => {
       res.end();
     });
   }
-
-  if (process.env.NODE_ENV === "production") {
-    res.sendFile(path.join(__dirname, "../public/index.html"));
-  }
+  // if (process.env.NODE_ENV === "production") {
+  //   res.sendFile(path.join(__dirname, "../public/index.html"));
+  // }
 });
 
 app.listen(3000, function () {
